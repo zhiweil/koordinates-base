@@ -23,7 +23,7 @@ test(
   "NZ addresses capabilites endpoint",
   async () => {
     let nza: KoordinatesDataset = LinzDatasets.find(
-      (d) => d.name === "NZ Addresses"
+      (d) => d.getName() === "NZ Addresses"
     ) as KoordinatesDataset;
     expect(nza).not.toBe(undefined);
 
@@ -52,7 +52,7 @@ test(
   "NZ addresses changesets endpoint",
   async () => {
     let nza: KoordinatesDataset = LinzDatasets.find(
-      (d) => d.name === "NZ Addresses"
+      (d) => d.getName() === "NZ Addresses"
     ) as KoordinatesDataset;
     expect(nza).not.toBe(undefined);
 
@@ -71,7 +71,7 @@ test(
   "NZ addresses spatial data query endpoints",
   async () => {
     let nza: KoordinatesDataset = LinzDatasets.find(
-      (d) => d.name === "NZ Addresses"
+      (d) => d.getName() === "NZ Addresses"
     ) as KoordinatesDataset;
     expect(nza).not.toBe(undefined);
 
@@ -83,7 +83,7 @@ test(
       10000
     );
     expect(
-      spatialDataJson["vectorQuery"]["layers"][`${nza.layerId}`]
+      spatialDataJson["vectorQuery"]["layers"][`${nza.getLayerId()}`]
     ).toBeDefined();
 
     let spatialDataXml = await nza.queryWfsSpatialApiXml(
@@ -103,17 +103,17 @@ test(
   "NZ addresses initial dataset",
   async () => {
     let nza: KoordinatesDataset = LinzDatasets.find(
-      (d) => d.name === "NZ Addresses"
+      (d) => d.getName() === "NZ Addresses"
     ) as KoordinatesDataset;
     expect(nza).not.toBe(undefined);
 
     let actualCount = await nza.getInitialDatasetCount();
-    console.log(`Initial dataset for ${nza.name} is ${actualCount}`);
+    console.log(`Initial dataset for ${nza.getName()} is ${actualCount}`);
     const batchSize = 100000;
     let start = 0;
     let count = 0;
     while (start < actualCount) {
-      let dataset = await nza.getInitialDataset(start, batchSize);
+      let dataset = await nza.getInitialDatasetInBatch(start, batchSize);
       count += dataset.length;
       start += dataset.length;
       console.log(`Loaded ${count} out of ${actualCount} records!`);
