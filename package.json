@@ -27,7 +27,6 @@
   },
   "homepage": "https://github.com/zhiweil/koordinates-base#readme",
   "devDependencies": {
-    "@types/adm-zip": "^0.5.5",
     "@types/jest": "^29.5.11",
     "@types/papaparse": "^5.3.14",
     "@types/xml2js": "^0.4.14",
@@ -38,7 +37,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "adm-zip": "^0.5.10",
     "papaparse": "^5.4.1",
     "xml2js": "^0.6.2"
   }

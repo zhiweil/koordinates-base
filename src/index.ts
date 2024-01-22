@@ -1,6 +1,5 @@
 import xml2js from "xml2js";
 import fs from "fs";
-import AdmZip from "adm-zip";
 import Buffer from "buffer";
 import { promisify } from "util";
 import readline from "readline";
@@ -419,26 +418,26 @@ export class KoordinatesDataset {
     }
 
     // download from S3 by file-saver if fie does not exist
-    const fn = `./datasets/${this.initialDataset}.zip`;
+    const fn = `./datasets/${this.initialDataset}`;
     if (!fs.existsSync(fn)) {
       let downloadReq = await fetch(
-        `${this.initialDatasetLocation}/${this.initialDataset}.zip`
+        `${this.initialDatasetLocation}/${this.initialDataset}`
       );
       let compressedDataset = await downloadReq.arrayBuffer();
 
       let buffer = Buffer.Buffer.from(compressedDataset);
       await fs
-        .createWriteStream(`./datasets/${this.initialDataset}.zip`)
+        .createWriteStream(`./datasets/${this.initialDataset}`)
         .write(buffer);
     }
 
     // unzip downloaded file
-    const zipFile = `./datasets/${this.initialDataset}.zip`;
-    await this.waitForFile(zipFile, 60000);
-    if (!fs.existsSync(`./datasets/${this.initialDataset}`)) {
-      const zip = new AdmZip(zipFile);
-      zip.extractAllTo("./datasets");
-    }
+    // const zipFile = `./datasets/${this.initialDataset}.zip`;
+    // await this.waitForFile(zipFile, 60000);
+    // if (!fs.existsSync(`./datasets/${this.initialDataset}`)) {
+    //   const zip = new AdmZip(zipFile);
+    //   zip.extractAllTo("./datasets");
+    // }
   }
 
   private getRecordCount(filePath: string): Promise<number> {
