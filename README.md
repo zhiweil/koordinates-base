@@ -227,6 +227,13 @@ The method below reuturns a specified XYZ tile in PNG format. It works with Web 
 
 The following methods will download initial dataset from cloud (AWS S3) to a local folder "./datasets" only if it is not found in the folder. The methods read the downloaded dataset by streaming and in batches to keep the memory usage low.
 
+**Recommendations:**
+
+- The processing of the initial dataset is time-consuming and you'll need to do it once, so please run this on a local PC other than cloud.
+- Download the dataset file manually and put it under folder "../datasets", you need to do it just once. No matter how many times you'll run/debug your processing code, the downloaded local file will be used.
+- Use the [Changesets](#changesets) method to bring your data repository up to date.
+- Schedule a cronjob to run [Changesets](#changesets) method daily to retrieve any further updates.
+
 ```typescript
   /**
    * Get the number of records in the initial dataset
