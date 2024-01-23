@@ -44,7 +44,7 @@ console.log(json);
 ```
 
 The parameters of the contructor can be found at the "Services and APIs" tab of the dataset page on corresponding Koordinates website. Please refer to the "NZ Addresses" dataset screenshot below.
-![NZ Addresses](./nz-addresses.png);
+![NZ Addresses](./nz-addresses.png)
 
 | Parameter              | Description                                                                                                                                                                |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
