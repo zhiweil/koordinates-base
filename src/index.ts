@@ -430,14 +430,6 @@ export class KoordinatesDataset {
         .createWriteStream(`./datasets/${this.initialDataset}`)
         .write(buffer);
     }
-
-    // unzip downloaded file
-    // const zipFile = `./datasets/${this.initialDataset}.zip`;
-    // await this.waitForFile(zipFile, 60000);
-    // if (!fs.existsSync(`./datasets/${this.initialDataset}`)) {
-    //   const zip = new AdmZip(zipFile);
-    //   zip.extractAllTo("./datasets");
-    // }
   }
 
   private getRecordCount(filePath: string): Promise<number> {
