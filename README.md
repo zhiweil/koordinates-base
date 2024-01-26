@@ -57,11 +57,16 @@ The parameters of the contructor can be found at the "Services and APIs" tab of 
 | initialDataset         | The dataset is usuallly huge so it is uploaded to a cloud location (AWS S3) to facilitate integrating it into your data repository. This field is the file name on AWS S3. |
 | initialDatasetLocation | The cloud location (AWS S3) of the dataset.                                                                                                                                |
 | initialDatasetTs       | The timestamp when the dataset was downloaded from Koordinates and uploaded to S3. The "Changesets" API can be then used to bring the dataset up to date.                  |
+| hasChangesets          | This is set to true if the dataset implements the "Changesets" API. THe [Changesets](#changesets) method throws exception if this is false.                                |
 
-**Note**: Please provide your Koordinate API key in a separate file, such as the "api-key.ts" file below. It is suggested to load the key at run time.
+<span style="color:red">**Note: Please provide your Koordinate API key in a separate file, such as the "api-key.ts" file below. It is suggested to load the key at run time.** </span>
 
 ```typescript
-const apiKey = "<API-KEY>";
+let apiKey = "";
+
+if (apiKey === "") {
+  apiKey = loadKey();
+}
 
 export default apiKey;
 ```

@@ -20,9 +20,11 @@ export interface KoordinatesDatasetParams {
   initialDataset: string;
   initialDatasetLocation: string;
   initialDatasetTs: string;
+  hasChangesets?: boolean;
 }
 
 export class KoordinatesDataset {
+  private FILE_WRITE_TIMEOUT = 300000;
   private stat = promisify(fs.stat);
   private koordinatesHost: string;
   private name: string;
@@ -33,6 +35,7 @@ export class KoordinatesDataset {
   private initialDataset: string;
   private initialDatasetLocation: string;
   private initialDatasetTs: string;
+  private hasChangesets: boolean;
 
   constructor(params: KoordinatesDatasetParams) {
     this.koordinatesHost = params.koordinatesHost;
@@ -44,6 +47,11 @@ export class KoordinatesDataset {
     this.initialDatasetTs = params.initialDatasetTs;
     this.initialDatasetLocation = params.initialDatasetLocation;
     this.initialDataset = params.initialDataset;
+    if (params.hasChangesets == undefined) {
+      this.hasChangesets = false;
+    } else {
+      this.hasChangesets = params.hasChangesets;
+    }
   }
 
   /**
@@ -83,6 +91,10 @@ export class KoordinatesDataset {
 
   getInitialDatasetLocation(): string {
     return this.initialDatasetLocation;
+  }
+
+  getHasChangesets(): boolean {
+    return this.hasChangesets;
   }
 
   /**
@@ -243,6 +255,11 @@ export class KoordinatesDataset {
     timestampFrom: string,
     timestampTo: string
   ): Promise<any> {
+    if (!this.hasChangesets) {
+      throw new Error(
+        `Changesets API is not supported by dataset ${this.name}.`
+      );
+    }
     if (this.apiKind != APIKind.WFS) {
       throw new Error(
         "Changesets API is available for WFS (Web Feature Service) only."
@@ -417,9 +434,10 @@ export class KoordinatesDataset {
       });
     }
 
-    // download from S3 by file-saver if fie does not exist
+    // download from S3 if fie does not exist
     const fn = `./datasets/${this.initialDataset}`;
     if (!fs.existsSync(fn)) {
+      console.log("started downloading...");
       let downloadReq = await fetch(
         `${this.initialDatasetLocation}/${this.initialDataset}`
       );
@@ -429,6 +447,8 @@ export class KoordinatesDataset {
       await fs
         .createWriteStream(`./datasets/${this.initialDataset}`)
         .write(buffer);
+      await this.waitForFile(fn, this.FILE_WRITE_TIMEOUT);
+      console.log("file written!");
     }
   }
 
@@ -450,7 +470,7 @@ export class KoordinatesDataset {
         });
       } catch (err) {
         console.log(err);
-        reject(`Failed reading file ${filePath}`);
+        reject(new Error(`Failed reading file ${filePath}`));
       }
     });
   }
@@ -489,13 +509,13 @@ export class KoordinatesDataset {
         });
       } catch (err) {
         console.log(err);
-        reject(`Failed reading file ${filePath}`);
+        reject(new Error(`Failed reading file ${filePath}`));
       }
     });
   }
 
-  private sleep(ms: number) {
-    new Promise((r) => setTimeout(r, ms));
+  private sleep(ms: number): Promise<any> {
+    return new Promise((r) => setTimeout(r, ms));
   }
 
   private async waitForFile(
@@ -510,7 +530,7 @@ export class KoordinatesDataset {
         await this.stat(filePath);
         return "Found";
       } catch (error) {
-        await this.sleep(1000);
+        await this.sleep(2000);
       }
     }
     return null;

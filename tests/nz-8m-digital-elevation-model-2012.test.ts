@@ -52,6 +52,29 @@ test(
 );
 
 test(
+  "NZ 8m Digital Elevation Model (2012) changesets endpoint",
+  async () => {
+    let nz8m: KoordinatesDataset = LinzDatasets.find(
+      (d) => d.getName() === "NZ 8m Digital Elevation Model (2012)"
+    ) as KoordinatesDataset;
+    expect(nz8m).not.toBe(undefined);
+
+    try {
+      await nz8m.getWfsChangesets(
+        apiKey,
+        "2023-01-01T00:00:00Z",
+        "2023-01-15T00:00:00Z"
+      );
+    } catch (ex) {
+      expect((ex as Error).message).toBe(
+        "Changesets API is not supported by dataset NZ 8m Digital Elevation Model (2012)."
+      );
+    }
+  },
+  TIMEOUT
+);
+
+test(
   "NZ 8m Digital Elevation Model (2012) spatial data query endpoints",
   async () => {
     let nz8m: KoordinatesDataset = LinzDatasets.find(

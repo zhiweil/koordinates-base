@@ -15,6 +15,7 @@ const LinzDatasets: KoordinatesDataset[] = [
     initialDatasetTs: "2023-12-20T00:00:00Z",
     initialDatasetLocation,
     initialDataset: "nz-addresses.csv",
+    hasChangesets: true,
   }),
 ];
 const TIMEOUT: number = 60000;
