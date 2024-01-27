@@ -21,6 +21,7 @@ export interface KoordinatesDatasetParams {
   initialDatasetLocation: string;
   initialDatasetTs: string;
   hasChangesets?: boolean;
+  hasSpatialInformation?: boolean;
 }
 
 export class KoordinatesDataset {
@@ -36,6 +37,7 @@ export class KoordinatesDataset {
   private initialDatasetLocation: string;
   private initialDatasetTs: string;
   private hasChangesets: boolean;
+  private hasSpatialInformation: boolean;
 
   constructor(params: KoordinatesDatasetParams) {
     this.koordinatesHost = params.koordinatesHost;
@@ -51,6 +53,11 @@ export class KoordinatesDataset {
       this.hasChangesets = false;
     } else {
       this.hasChangesets = params.hasChangesets;
+    }
+    if (params.hasSpatialInformation == undefined) {
+      this.hasSpatialInformation = false;
+    } else {
+      this.hasSpatialInformation = params.hasSpatialInformation;
     }
   }
 
@@ -95,6 +102,10 @@ export class KoordinatesDataset {
 
   getHasChangesets(): boolean {
     return this.hasChangesets;
+  }
+
+  getHasSpatialInformation(): boolean {
+    return this.hasSpatialInformation;
   }
 
   /**
@@ -294,6 +305,10 @@ export class KoordinatesDataset {
         "This method is applied to Web Feature Service datasets only"
       );
     }
+    if (!this.hasSpatialInformation) {
+      throw new Error("This dataset does not have spatial information.");
+    }
+
     let endpoint = `${this.koordinatesHost}/services/query/${this.apiVersion}/vector.json?key=${apiKey}&layer=${this.layerId}&x=${longitude}&y=${latitude}&max_results=${maxResult}&radius=${radius}&geometry=true&with_field_names=true`;
     let resp: Response = await fetch(endpoint);
 
@@ -323,6 +338,10 @@ export class KoordinatesDataset {
         "This method is applied to Web Feature Service datasets only"
       );
     }
+    if (!this.hasSpatialInformation) {
+      throw new Error("This dataset does not have spatial information.");
+    }
+
     let endpoint = `${this.koordinatesHost}/services/query/${this.apiVersion}/vector.xml?key=${apiKey}&layer=${this.layerId}&x=${longitude}&y=${latitude}&max_results=${maxResult}&radius=${radius}&geometry=true&with_field_names=true`;
     let resp: Response = await fetch(endpoint);
 
@@ -348,6 +367,10 @@ export class KoordinatesDataset {
         "This method is applied to Web Map Tile Service datasets only"
       );
     }
+    if (!this.hasSpatialInformation) {
+      throw new Error("This dataset does not have spatial information.");
+    }
+
     let endpoint = `${this.koordinatesHost}/services/query/${this.apiVersion}/raster.json?key=${apiKey}&layer=${this.layerId}&x=${longitude}&y=${latitude}`;
     let resp: Response = await fetch(endpoint);
 

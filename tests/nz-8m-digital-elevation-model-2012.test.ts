@@ -15,6 +15,7 @@ const LinzDatasets: KoordinatesDataset[] = [
     initialDatasetTs: "2014-05-13T05:27:00Z",
     initialDatasetLocation: "",
     initialDataset: "",
+    hasSpatialInformation: true,
   }),
 ];
 
