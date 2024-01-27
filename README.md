@@ -51,6 +51,7 @@ The parameters of the contructor can be found at the "Services and APIs" tab of 
 | koordinatesHost        | The URL of the Koordinates account of the dataset provider.                                                                                                                |
 | name                   | The dataset name given by the dataset provider.                                                                                                                            |
 | layerId                | The layer ID of the dataset.                                                                                                                                               |
+| tableId                | The table ID of dataset.                                                                                                                                                   |
 | apiKind                | The API kind.                                                                                                                                                              |
 | apiVersion             | The version of the API.                                                                                                                                                    |
 | version                | The version of the dataset.                                                                                                                                                |
@@ -58,6 +59,9 @@ The parameters of the contructor can be found at the "Services and APIs" tab of 
 | initialDatasetLocation | The cloud location (AWS S3) of the dataset.                                                                                                                                |
 | initialDatasetTs       | The timestamp when the dataset was downloaded from Koordinates and uploaded to S3. The "Changesets" API can be then used to bring the dataset up to date.                  |
 | hasChangesets          | This is set to true if the dataset implements the "Changesets" API. THe [Changesets](#changesets) method throws exception if this is false.                                |
+| hasSpatialInformation  | This set to true if dataset contains spatial information.                                                                                                                  |
+
+<span style="color:gray"><i> The field "layerId" should be populated if the dataset type is not "Data Table"; otherwise, the field "tableId" should be populated. Only one of the two fields needs to be used for a specific dataset. </i></span>
 
 <span style="color:red">**Note: Please provide your Koordinate API key in a separate file, such as the "api-key.ts" file below. It is suggested to load the key at run time.** </span>
 

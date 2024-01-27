@@ -13,7 +13,8 @@ export enum APIKind {
 export interface KoordinatesDatasetParams {
   koordinatesHost: string;
   name: string;
-  layerId: number;
+  layerId?: number;
+  tableId?: number;
   apiVersion: string;
   version: string;
   apiKind: APIKind;
@@ -30,6 +31,7 @@ export class KoordinatesDataset {
   private koordinatesHost: string;
   private name: string;
   private layerId: number;
+  private tableId: number;
   private apiVersion: string;
   private version: string;
   private apiKind: APIKind;
@@ -40,9 +42,26 @@ export class KoordinatesDataset {
   private hasSpatialInformation: boolean;
 
   constructor(params: KoordinatesDatasetParams) {
+    if (params.layerId == undefined && params.tableId == undefined) {
+      throw new Error("layerId and tableId cannot be both undefined");
+    }
+
+    if (params.layerId != undefined && params.tableId != undefined) {
+      throw new Error("layerId and tableId cannot be assigned values");
+    }
+
     this.koordinatesHost = params.koordinatesHost;
     this.name = params.name;
-    this.layerId = params.layerId;
+    if (params.layerId != undefined) {
+      this.layerId = params.layerId;
+    } else {
+      this.layerId = -1;
+    }
+    if (params.tableId != undefined) {
+      this.tableId = params.tableId;
+    } else {
+      this.tableId = -1;
+    }
     this.apiKind = params.apiKind;
     this.apiVersion = params.apiVersion;
     this.version = params.version;
@@ -74,6 +93,10 @@ export class KoordinatesDataset {
 
   getLayerId(): number {
     return this.layerId;
+  }
+
+  getTableId(): number {
+    return this.tableId;
   }
 
   getApiVersion(): string {
@@ -180,7 +203,11 @@ export class KoordinatesDataset {
   }
 
   private async getWfsLayerCapabilitiesXml(apiKey: string): Promise<string> {
-    let endpoint: string = `${this.koordinatesHost}/services;key=${apiKey}/wfs/layer-${this.layerId}/?service=WFS&request=GetCapabilities`;
+    let endpoint: string = `${
+      this.koordinatesHost
+    }/services;key=${apiKey}/wfs/${this.tableId > 0 ? "table" : "layer"}-${
+      this.tableId > 0 ? this.tableId : this.layerId
+    }/?service=WFS&request=GetCapabilities`;
     let resp: Response = await fetch(endpoint);
     let xmlText = await resp.text();
     return xmlText;
