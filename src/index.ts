@@ -205,9 +205,7 @@ export class KoordinatesDataset {
   private async getWfsLayerCapabilitiesXml(apiKey: string): Promise<string> {
     let endpoint: string = `${
       this.koordinatesHost
-    }/services;key=${apiKey}/wfs/${this.tableId > 0 ? "table" : "layer"}-${
-      this.tableId > 0 ? this.tableId : this.layerId
-    }/?service=WFS&request=GetCapabilities`;
+    }/services;key=${apiKey}/wfs/${this.datasetId()}/?service=WFS&request=GetCapabilities`;
     let resp: Response = await fetch(endpoint);
     let xmlText = await resp.text();
     return xmlText;
@@ -303,7 +301,11 @@ export class KoordinatesDataset {
         "Changesets API is available for WFS (Web Feature Service) only."
       );
     }
-    let endpoint: string = `${this.koordinatesHost}/services;key=${apiKey}/wfs/layer-${this.layerId}-changeset?SERVICE=WFS&VERSION=${this.version}&REQUEST=GetFeature&typeNames=layer-${this.layerId}-changeset&viewparams=from:${timestampFrom};to:${timestampTo}&outputFormat=json`;
+    let endpoint: string = `${
+      this.koordinatesHost
+    }/services;key=${apiKey}/wfs/${this.datasetId()}-changeset?SERVICE=WFS&VERSION=${
+      this.version
+    }&REQUEST=GetFeature&typeNames=${this.datasetId()}-changeset&viewparams=from:${timestampFrom};to:${timestampTo}&outputFormat=json`;
     let resp: Response = await fetch(endpoint);
 
     let json = await resp.json();
@@ -607,5 +609,11 @@ export class KoordinatesDataset {
         resolve(jsonData);
       })
     );
+  }
+
+  private datasetId(): string {
+    return `${this.tableId > 0 ? "table" : "layer"}-${
+      this.tableId > 0 ? this.tableId : this.layerId
+    }`;
   }
 }
